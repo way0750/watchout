@@ -2,10 +2,26 @@
 
 /* Note: an asteroid image is included in this repo.
 Feel free to use it if you like. */
+*{
+	margin: 0px;
+}
+
+:root{
+    background: aqua;
+}
+
 svg{
 	background-color: yellow
 }
 
 .spin{
 	background: red;
+}
+
+div:not(.board){
+	display: inline-block;
+	margin-right: 2em;
+	margin-left: 1em;
+	margin-top: 0.2em;
+	font: 1.2em sans-serif;
 }
