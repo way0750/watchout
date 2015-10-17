@@ -1,55 +1,6 @@
 
-var width = 1400;
-var height = 580;
-var animateSpeed = 1500;
-var enemySize = 20;
-var playerSize = 20;
-var highestScore = 0;
-var curScore = 0;
-var frameSoFar = 0;
-var numCollisons = 0;
-var collisionDistance = 30;
-var enemyFaces = ["001.png", "buster.png", "kenny.png", "kyle.png"];
-var enemyClasses = ['enemy', 'enemy spin'];
-
-var board = d3.select('.board').append('svg').attr({width : width, height : height});
-var enemyArray = [], enemies;
-
-function selectRandomEnemy () {
-  return enemyFaces[Math.floor( Math.random() * enemyFaces.length )];
-}
-
-function selectRandomClass () {
-  return enemyClasses[Math.floor( Math.random() * enemyClasses.length )]; 
-}
-
-function generateEnemies (n){
-  for (var i = 0; i<n; ++i){
-    enemyArray.push([i, true]);
-  }
-  enemies = board.selectAll('circle').data(enemyArray);
-
-  enemies.enter()
-         .append('image')
-         .attr('class', selectRandomClass)
-         .attr('xlink:href', function () {
-           return 'assets/' + selectRandomEnemy();
-         })
-         .attr({
-          'height':playerSize*4+'px', 
-          'width':playerSize*4+'px'
-        })
-         .attr( "x", function(){return Math.random()* width;}) 
-         .attr( "y", function(){return Math.random()* height;});
-
-
-
-  enemies = board.selectAll('.enemy');
-}
-
 generateEnemies(10);
 
-var player1 = board.append('image');
 player1.classed('player', true)
   .attr('xlink:href', 'assets/carman.png')
   .attr({
@@ -60,117 +11,10 @@ player1.classed('player', true)
   .attr('y', 25);
 
 
-var dragBehavior = d3.behavior.drag();
+repeatAnimation(moveRandom);
 
-dragBehavior.on('drag', function () {
-  var xPos = d3.event.x, yPos = d3.event.y;
-  var node = d3.select(this);
-  if (playerSize<=xPos && xPos+playerSize*2 <=width) {
-      d3.select(this).attr('x', xPos-playerSize*1.8);
-  }
-  if (playerSize <= yPos && yPos+playerSize*2 <=height){
-    d3.select(this).attr('y', yPos-playerSize*1.8);
-  }
-});
-
-
-player1.call(dragBehavior);
-// change cx and cy of each circle for each function call
-// then make that function call itself every 1000 ms;
-
-var animate = function(){
-  var enemies = d3.selectAll('.enemy')
-                  .transition()
-                  .ease('cubic-bezier')
-                  .duration(animateSpeed)
-                  .attr( "x", function(){return Math.random()* width;}) 
-                  .attr("y", function(){return Math.random()* height;});
-
-  setTimeout(animate, animateSpeed);
-};
-
-
-animate();
-
-
-
-function playExplosionFactory(){
-  var readyToExplode = true;
-  var explode = function (xPos, yPos){
-    if (readyToExplode){
-    var explosion = board.append('image')
-            .attr('xlink:href', 'assets/explosion.gif')
-            .attr({
-              'x': xPos-playerSize*2.3, 
-              'y':yPos-playerSize*2.3, 
-              'height':playerSize*10+'px', 
-              'width':playerSize*10+'px'
-            });
-      readyToExplode = false;
-      setTimeout(function(){explosion.remove();}, 750);
-      setTimeout(function(){readyToExplode = true;}, 500); 
-    }
-  };
-  return explode;
-}
-var playExplosion = playExplosionFactory();
-
-
-
-function collisionCheck () {
-  frameSoFar++;
-  if (frameSoFar >= 60){
-    curScore++; 
-    frameSoFar = 0;
-    d3.select("#curScore").text(curScore);
-  }
-
-  d3.selectAll('.enemy').each(function(data){
-    // debugger;
-    var enemyX = +(d3.select(this).attr('x').slice(0, -2));
-    var enemyY = +(d3.select(this).attr('y').slice(0, -2));
-    var player1 = d3.select('.player');
-    var player1x = parseInt(player1.attr('x'));
-    var player1y = parseInt(player1.attr('y'));
-    // console.log(enemyX);
-
-    if (data[1] && Math.abs(player1x - enemyX) < collisionDistance && Math.abs(player1y - enemyY) < collisionDistance){    // collision happened
-      playExplosion(player1x, player1y);
-      data[1] = false;
-      highestScore = Math.max(curScore, highestScore);
-      curScore = 0;
-      d3.select('#highestScore').text(highestScore);
-      d3.select('#numCollisons').text(++numCollisons);
-    
-    }
-    
-    if ( Math.abs(player1x - enemyX) > collisionDistance && Math.abs(player1y - enemyY) > collisionDistance) {
-      data[1] = true;
-    }
-  
-  });
-  requestAnimationFrame(collisionCheck);
-}
 
 collisionCheck();
 
-function moveCartman (event){
-  var coords = d3.mouse(this);
-  if (coords[0] > 110 && coords[0]<  1460) { // mouse is in bounds horizontally
-      player1.attr('x', coords[0]-(playerSize*5.9));
-  } else if (coords[0] < 110){
-    player1.attr('x', 0);
-  } else if (coords[0] > 1481){
 
-    player1.attr('x', 1340)
-  }
-  if (playerSize <= coords[1] && coords[1]+playerSize*2 <=height){ // mouse is in bounds vertically
-    player1.attr('y', coords[1]-(playerSize*3.5));
-  } else if (coords[1] < 0){
-    player1.attr('y', playerSize*3.5);
-  } else if (coords[1] > height-(playerSize*3.5)){
-    player1.attr('y', height-(playerSize*3.5))
-  }
-}
-d3.select('.board').on("mousemove", moveCartman);
-// setInterval(collisionCheck, 10)
+d3.select('.board').on("mousemove", movePlayer);
