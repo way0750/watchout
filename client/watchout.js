@@ -10,7 +10,7 @@ var frameSoFar = 0;
 var numCollisons = 0;
 var collisionDistance = 30;
 var enemyFaces = ["001.png", "buster.png", "kenny.png", "kyle.png"];
-
+var enemyClasses = ['enemy', 'enemy spin'];
 
 var board = d3.select('.board').append('svg').attr({width : width, height : height});
 var enemyArray = [], enemies;
@@ -19,17 +19,19 @@ function selectRandomEnemy () {
   return enemyFaces[Math.floor( Math.random() * enemyFaces.length )];
 }
 
+function selectRandomClass () {
+  return enemyClasses[Math.floor( Math.random() * enemyClasses.length )]; 
+}
+
 function generateEnemies (n){
   for (var i = 0; i<n; ++i){
     enemyArray.push([i, true]);
   }
   enemies = board.selectAll('circle').data(enemyArray);
 
-
-
   enemies.enter()
          .append('image')
-         .classed('enemy', true)
+         .attr('class', selectRandomClass)
          .attr('xlink:href', function () {
            return 'assets/' + selectRandomEnemy();
          })
@@ -89,6 +91,9 @@ var animate = function(){
 
 
 animate();
+
+
+
 function playExplosionFactory(){
   var readyToExplode = true;
   var explode = function (xPos, yPos){
@@ -114,9 +119,9 @@ var playExplosion = playExplosionFactory();
 
 function collisionCheck () {
   frameSoFar++;
-  if (frameSoFar >= 0){
+  if (frameSoFar >= 60){
     curScore++; 
-    frameSoFar%=60;
+    frameSoFar = 0;
     d3.select("#curScore").text(curScore);
   }
 
