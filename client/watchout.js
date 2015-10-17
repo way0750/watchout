@@ -11,7 +11,7 @@ var numCollisons = 0;
 var collisionDistance = 30;
 
 
-var board = d3.select('.board').append('svg').attr({width : window.width, height : height});
+var board = d3.select('.board').append('svg').attr({width : width, height : height});
 
 var enemyArray = [], enemies;
 
@@ -36,6 +36,7 @@ generateEnemies(20);
 var player1 = board.append('circle');
 player1.classed('player', true)
   .attr('r', playerSize + "px").attr('fill', "blue")
+  .attr({'stroke': 'black', 'stroke-width':'5px'})
   .attr('cx', width/2)
   .attr('cy', height/2);
 
@@ -71,7 +72,27 @@ var animate = function(){
 
 
 animate();
+function playExplosionFactory(){
+  var readyToExplode = true;
+  var explode = function (xPos, yPos){
+    if (readyToExplode){
+    var explosion = board.append('image')
+            .attr('xlink:href', 'assets/explosion.gif')
+            .attr({
+              'x': xPos-playerSize*5, 
+              'y':yPos-playerSize*5, 
+              'height':playerSize*10+'px', 
+              'width':playerSize*10+'px'
+            });
+      readyToExplode = false;
+      setTimeout(function(){explosion.remove()}, 750)
+      setTimeout(function(){readyToExplode = true;}, 500); 
+    }
+  }
+  return explode;
+}
 
+var playExplosion = playExplosionFactory();
 
 function collisionCheck () {
   frameSoFar++;
@@ -91,7 +112,7 @@ function collisionCheck () {
     // console.log(enemyX);
 
     if (data[1] && Math.abs(player1x - enemyX) < collisionDistance && Math.abs(player1y - enemyY) < collisionDistance){    // collision happened
-    
+      playExplosion(player1x, player1y);
       data[1] = false;
       highestScore = Math.max(curScore, highestScore);
       curScore = 0;
