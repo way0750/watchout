@@ -14,6 +14,7 @@ var enemyClasses = ['enemy', 'enemy spin'];
 var board = d3.select('.board').append('svg').attr({width : width, height : height});
 var player1 = board.append('image');
 var enemyArray = [], enemies;
+var curAnimation = moveRandom;
 
 //*************** END GLOBALS ****************** 
 
@@ -57,8 +58,8 @@ function generateEnemies (n){
          .attr( "y", function(){return Math.random()* height;});
 }
 function repeatAnimation(animationStyle){  
-  animationStyle();
-  setTimeout(animationStyle, animateSpeed);
+  curAnimation();
+  setTimeout(repeatAnimation, animateSpeed);
 }
 
 function moveRandom (){
