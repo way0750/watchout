@@ -1,5 +1,5 @@
 
-var width = 1000;
+var width = 1400;
 var height = 580;
 var animateSpeed = 1000;
 var enemySize = 20;
@@ -21,12 +21,15 @@ function generateEnemies (n){
   }
   enemies = board.selectAll('circle').data(enemyArray);
   enemies.enter()
-         .append('circle')
+         .append('image')
          .classed('enemy', true)
-         .attr('r', enemySize + "px")
-         .attr({'fill' : 'red', 'stroke':'black', 'stroke-width' : '5px'})
-         .attr( "cx", function(){return Math.random()* width}) 
-         .attr("cy", function(){return Math.random()* height});
+         .attr('xlink:href', 'assets/carman.png')
+         .attr({
+          'height':playerSize*4+'px', 
+          'width':playerSize*4+'px'
+        })
+         .attr( "x", function(){return Math.random()* width}) 
+         .attr( "y", function(){return Math.random()* height});
 
   enemies = board.selectAll('.enemy');
 }
@@ -64,8 +67,8 @@ var animate = function(){
                   .transition()
                   .ease('cubic-bezier')
                   .duration(animateSpeed)
-                  .attr( "cx", function(){return Math.random()* width}) 
-                  .attr("cy", function(){return Math.random()* height});
+                  .attr( "x", function(){return Math.random()* width}) 
+                  .attr("y", function(){return Math.random()* height});
 
   setTimeout(animate, animateSpeed);
 };
@@ -91,8 +94,9 @@ function playExplosionFactory(){
   }
   return explode;
 }
-
 var playExplosion = playExplosionFactory();
+
+
 
 function collisionCheck () {
   frameSoFar++;
@@ -104,8 +108,8 @@ function collisionCheck () {
 
   d3.selectAll('.enemy').each(function(data){
     // debugger;
-    var enemyX = +(d3.select(this).attr('cx').slice(0, -2));
-    var enemyY = +(d3.select(this).attr('cy').slice(0, -2));
+    var enemyX = +(d3.select(this).attr('x').slice(0, -2));
+    var enemyY = +(d3.select(this).attr('y').slice(0, -2));
     var player1 = d3.select('.player');
     var player1x = parseInt(player1.attr('cx'));
     var player1y = parseInt(player1.attr('cy'));
