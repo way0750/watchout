@@ -13,7 +13,7 @@ player1.classed('player', true)
 
 repeatAnimation(moveRandom);
 
-
+requestAnimationFrame(collisionCheck)
 collisionCheck();
 
 

@@ -57,6 +57,7 @@ function generateEnemies (n){
          .attr( "x", function(){return Math.random()* width;}) 
          .attr( "y", function(){return Math.random()* height;});
 }
+
 function repeatAnimation(animationStyle){  
   curAnimation();
   setTimeout(repeatAnimation, animateSpeed);
@@ -70,6 +71,8 @@ function moveRandom (){
             .attr( "x", function(){return Math.random()* width;}) 
             .attr("y", function(){return Math.random()* height;});
 }
+
+function pause () {}
 
 var playExplosion = (function(){     // IIFE to throttle, closure with readyToExplode bool
   var readyToExplode = true;
@@ -92,15 +95,14 @@ var playExplosion = (function(){     // IIFE to throttle, closure with readyToEx
 
 function updateScore (){
   frameSoFar++;
-  if (frameSoFar >= 60){
+  if (frameSoFar >= 120){
     curScore++; 
     frameSoFar = 0;
-    d3.select("#curScore").text(curScore);
+    d3.select(".curScore").text(curScore);
   }
 }
 
 function collisionCheck () {
-
   d3.selectAll('.enemy').each(function(data){
     var enemyX = +(d3.select(this).attr('x').slice(0, -2));
     var enemyY = +(d3.select(this).attr('y').slice(0, -2));
@@ -115,9 +117,8 @@ function collisionCheck () {
       data[1] = false;
       highestScore = Math.max(curScore, highestScore);
       curScore = 0;
-      d3.select('#highestScore').text(highestScore);
-      d3.select('#numCollisons').text(++numCollisons);
-
+      d3.select('.highscore').text(highestScore);
+      d3.select('.numCollisons').text(++numCollisons);
     }
     
     if ( Math.abs(player1x - enemyX) > collisionDistance && Math.abs(player1y - enemyY) > collisionDistance) {
@@ -126,6 +127,7 @@ function collisionCheck () {
 
   });
 
+  updateScore();
   requestAnimationFrame(collisionCheck); // update collision info continuously
 }
 

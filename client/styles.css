@@ -11,7 +11,8 @@ Feel free to use it if you like. */
 }
 
 svg{
-	background-color: yellow
+	background-color: yellow;
+  position: relative;
 }
 
 .spin{
@@ -38,4 +39,9 @@ div:not(.board){
 	margin-left: 1em;
 	margin-top: 0.2em;
 	font: 1.2em sans-serif;
+}
+
+player {
+  position: relative;
+  z-index: 100;
 }
