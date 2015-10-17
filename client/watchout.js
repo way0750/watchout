@@ -44,9 +44,14 @@ var dragBehavior = d3.behavior.drag();
 
 dragBehavior.on('drag', function () {
   var xPos = d3.event.x, yPos = d3.event.y;
-  d3.select(this).attr('cx', xPos)
-                 .attr('cy', yPos);
-})
+  var node = d3.select(this);
+  if (playerSize<=xPos && xPos+playerSize*2 <=width) {
+      d3.select(this).attr('cx', xPos);
+  }
+  if (playerSize <= yPos && yPos+playerSize*2 <=height){
+    d3.select(this).attr('cy', yPos);
+  }
+});
 
 
 player1.call(dragBehavior);
@@ -75,7 +80,7 @@ function collisionCheck () {
     frameSoFar%=60;
     d3.select("#curScore").text(curScore);
   }
-  
+
   d3.selectAll('.enemy').each(function(data){
     // debugger;
     var enemyX = +(d3.select(this).attr('cx').slice(0, -2));
