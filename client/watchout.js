@@ -47,7 +47,7 @@ function generateEnemies (n){
   enemies = board.selectAll('.enemy');
 }
 
-generateEnemies(20);
+generateEnemies(10);
 
 var player1 = board.append('image');
 player1.classed('player', true)
@@ -153,4 +153,24 @@ function collisionCheck () {
 }
 
 collisionCheck();
+
+function moveCartman (event){
+  var coords = d3.mouse(this);
+  if (coords[0] > 110 && coords[0]<  1460) { // mouse is in bounds horizontally
+      player1.attr('x', coords[0]-(playerSize*5.9));
+  } else if (coords[0] < 110){
+    player1.attr('x', 0);
+  } else if (coords[0] > 1481){
+
+    player1.attr('x', 1340)
+  }
+  if (playerSize <= coords[1] && coords[1]+playerSize*2 <=height){ // mouse is in bounds vertically
+    player1.attr('y', coords[1]-(playerSize*3.5));
+  } else if (coords[1] < 0){
+    player1.attr('y', playerSize*3.5);
+  } else if (coords[1] > height-(playerSize*3.5)){
+    player1.attr('y', height-(playerSize*3.5))
+  }
+}
+d3.select('.board').on("mousemove", moveCartman);
 // setInterval(collisionCheck, 10)

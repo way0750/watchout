@@ -15,7 +15,21 @@ svg{
 }
 
 .spin{
-	background: red;
+	-webkit-animation-duration: 500ms;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-name: rotatingE;
+  -webkit-animation-timing-function:linear;
+  transform-origin: 50% 50%;
+}
+
+@-webkit-keyframes rotatingE{
+    100% {
+      transform: rotate(360deg);
+    }
+}
+
+.board{
+  padding: 20px;
 }
 
 div:not(.board){
